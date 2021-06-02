@@ -7,11 +7,56 @@ plugins {
 	kotlin("plugin.spring") version "1.5.10"
 	kotlin("plugin.jpa") version "1.4.32"
 	kotlin("plugin.allopen") version "1.4.32"
+	id("jacoco")
 }
 
 group = "com.branch"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+jacoco {
+	toolVersion = "0.8.6"
+}
+
+tasks.jacocoTestReport {
+	reports {
+		html.isEnabled = true
+		xml.isEnabled = false
+		csv.isEnabled = true
+	}
+	finalizedBy("jacocoTestCoverageVerification")
+}
+
+tasks.jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			enabled = true
+			element = "CLASS"
+
+			limit {
+				counter = "BRANCH"
+				value = "COVEREDRATIO"
+				minimum = "0.80".toBigDecimal()
+			}
+
+			limit {
+				counter = "LINE"
+				value = "COVEREDRATIO"
+				minimum = "0.80".toBigDecimal()
+			}
+
+			limit {
+				counter = "LINE"
+				value = "TOTALCOUNT"
+				maximum = "200".toBigDecimal()
+			}
+			excludes = listOf(
+				"com.branch.server.BranchServerApplicationKt",
+			)
+		}
+	}
+}
+
 
 repositories {
 	mavenCentral()
@@ -74,5 +119,6 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
+	finalizedBy("jacocoTestReport")
 	useJUnitPlatform()
 }
