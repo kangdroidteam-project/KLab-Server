@@ -53,7 +53,9 @@ tasks.jacocoTestCoverageVerification {
 			excludes = listOf(
 				"com.branch.server.BranchServerApplicationKt",
 				"com.branch.server.error.**",
-				"com.branch.server.security.**"
+				"com.branch.server.security.**",
+				"com.branch.server.data.request.**",
+				"com.branch.server.data.response.**",
 			)
 		}
 	}
