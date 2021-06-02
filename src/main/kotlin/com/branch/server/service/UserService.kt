@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val passwordEncryptorService: PasswordEncryptorService
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     fun registerUser(registerRequest: RegisterRequest) {
@@ -20,7 +21,7 @@ class UserService(
         userRepository.addUser(
             User(
                 userId = registerRequest.userId,
-                userPassword = registerRequest.userPassword,
+                userPassword = passwordEncryptorService.encodePlainText(registerRequest.userPassword),
                 userName = registerRequest.userName,
                 userAddress = registerRequest.userAddress,
                 userPhoneNumber = registerRequest.userPhoneNumber,

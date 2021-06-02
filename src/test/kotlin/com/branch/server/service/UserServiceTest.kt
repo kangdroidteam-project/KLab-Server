@@ -52,6 +52,7 @@ internal class UserServiceTest {
         }.onSuccess {
             val user: User = userRepository.findUserById(mockRequest.userId)
             assertThat(user.userId).isEqualTo(mockRequest.userId)
+            assertThat(user.userPassword).isNotEqualTo(mockRequest.userPassword)
         }
 
         // Request one more
