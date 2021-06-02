@@ -56,6 +56,7 @@ tasks.jacocoTestCoverageVerification {
 				"com.branch.server.security.**",
 				"com.branch.server.data.request.**",
 				"com.branch.server.data.response.**",
+				"com.branch.server.data.user.User",
 			)
 		}
 	}
