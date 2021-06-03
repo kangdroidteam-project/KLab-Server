@@ -1,5 +1,7 @@
 package com.branch.server.data.user
 
+import com.branch.server.data.entity.user.User
+import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.NotFoundException
 import com.branch.server.error.exception.UnknownErrorException

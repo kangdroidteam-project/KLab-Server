@@ -1,4 +1,4 @@
-package com.branch.server.data.reservation
+package com.branch.server.data.entity.reservation
 
 import org.springframework.data.jpa.repository.JpaRepository
 

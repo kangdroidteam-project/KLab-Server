@@ -1,6 +1,8 @@
 package com.branch.server.data.community
 
-import com.branch.server.data.reservation.GardenReservation
+import com.branch.server.data.entity.community.Community
+import com.branch.server.data.entity.community.CommunityRepository
+import com.branch.server.data.entity.reservation.GardenReservation
 import com.branch.server.error.exception.NotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach

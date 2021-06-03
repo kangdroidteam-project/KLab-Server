@@ -1,6 +1,6 @@
-package com.branch.server.data.community
+package com.branch.server.data.entity.community
 
-import com.branch.server.data.reservation.GardenReservationRepository
+import com.branch.server.data.entity.reservation.GardenReservationRepository
 import com.branch.server.error.exception.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

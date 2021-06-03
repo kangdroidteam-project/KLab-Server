@@ -1,6 +1,6 @@
 package com.branch.server.security
 
-import com.branch.server.data.user.UserRepository
+import com.branch.server.data.entity.user.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service

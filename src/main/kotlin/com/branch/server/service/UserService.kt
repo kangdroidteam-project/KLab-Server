@@ -3,8 +3,8 @@ package com.branch.server.service
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
-import com.branch.server.data.user.User
-import com.branch.server.data.user.UserRepository
+import com.branch.server.data.entity.user.User
+import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.ForbiddenException
 import com.branch.server.security.JWTTokenProvider

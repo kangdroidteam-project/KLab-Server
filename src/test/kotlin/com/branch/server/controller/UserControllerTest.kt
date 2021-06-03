@@ -3,7 +3,7 @@ package com.branch.server.controller
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
-import com.branch.server.data.user.UserRepository
+import com.branch.server.data.entity.user.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

@@ -1,4 +1,4 @@
-package com.branch.server.data.user
+package com.branch.server.data.entity.user
 
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.NotFoundException

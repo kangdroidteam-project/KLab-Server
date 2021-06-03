@@ -1,6 +1,6 @@
-package com.branch.server.data.community
+package com.branch.server.data.entity.community
 
-import com.branch.server.data.reservation.GardenReservation
+import com.branch.server.data.entity.reservation.GardenReservation
 import javax.persistence.*
 
 @Entity
