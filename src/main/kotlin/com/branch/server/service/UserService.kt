@@ -1,5 +1,8 @@
 package com.branch.server.service
 
+import com.branch.server.data.entity.community.CommunityRepository
+import com.branch.server.data.entity.median.MedianTable
+import com.branch.server.data.entity.median.MedianTableRepository
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
@@ -16,7 +19,9 @@ import org.springframework.stereotype.Service
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncryptorService: PasswordEncryptorService,
-    private val jwtTokenProvider: JWTTokenProvider
+    private val jwtTokenProvider: JWTTokenProvider,
+    private val medianTableRepository: MedianTableRepository,
+    private val communityRepository: CommunityRepository
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     fun registerUser(registerRequest: RegisterRequest) {
@@ -45,5 +50,14 @@ class UserService(
         return LoginResponse(
             userToken = jwtTokenProvider.createToken(user.userId, user.roles.toList())
         )
+    }
+
+    fun registerClass(userToken: String, communityId: Long) {
+        val user: User = userRepository.findByUserId(jwtTokenProvider.getUserPk(userToken))
+        val medianTable: MedianTable = MedianTable(
+            targetUser = user,
+            targetCommunity = communityRepository.findById(communityId)
+        )
+        medianTableRepository.save(medianTable)
     }
 }
