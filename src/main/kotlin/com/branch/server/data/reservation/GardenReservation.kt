@@ -6,7 +6,6 @@ import javax.persistence.*
 class GardenReservation(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
     var id: Long = -1,
     var reservationStartTime: Long,
     var reservationEndTime: Long,

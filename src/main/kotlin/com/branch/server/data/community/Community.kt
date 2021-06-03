@@ -7,7 +7,6 @@ import javax.persistence.*
 class Community(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
     var id: Long = -1,
     var contentTitle: String, // 제목
     var contentAuthor: String, // 만든사람
