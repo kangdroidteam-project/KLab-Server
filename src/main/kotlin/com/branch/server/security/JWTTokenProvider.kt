@@ -1,9 +1,12 @@
 package com.branch.server.security
 
+import com.branch.server.error.exception.NotFoundException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
@@ -17,6 +20,8 @@ class JWTTokenProvider(private val userDetailsService: UserDetailsService) {
     // TODO: Make it privately configured
     private val testInnerPassword: String = Base64.getEncoder()
         .encodeToString("alsdfj;alsdfjkldsajlksajdflasdjl;fjasldkfjlsadfas;dfjlasdjfsl;adfj;ldsjfklsajdfljs".toByteArray())
+
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     // Expiration Time
     private val expirationPeriod: Long = 5 * 60 * 1000L
@@ -45,7 +50,13 @@ class JWTTokenProvider(private val userDetailsService: UserDetailsService) {
     }
 
     fun getUserPk(token: String): String {
-        return Jwts.parser().setSigningKey(testInnerPassword).parseClaimsJws(token).body.subject
+        return runCatching {
+            Jwts.parser().setSigningKey(testInnerPassword).parseClaimsJws(token).body.subject
+        }.getOrElse {
+            logger.error("Cannot parse or find userPk from input token: ${token}.")
+            logger.error(it.stackTraceToString())
+            throw NotFoundException("Cannot parse or find userPk from input token: ${token}.")
+        }
     }
 
     fun resolveToken(request: HttpServletRequest): String? {
