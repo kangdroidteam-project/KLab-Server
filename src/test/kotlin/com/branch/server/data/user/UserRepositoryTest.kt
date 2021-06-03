@@ -1,5 +1,6 @@
 package com.branch.server.data.user
 
+import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.NotFoundException
 import com.branch.server.error.exception.UnknownErrorException
 import org.assertj.core.api.Assertions.assertThat
@@ -49,6 +50,15 @@ internal class UserRepositoryTest {
         assertThat(userList.isNotEmpty()).isEqualTo(true)
         assertThat(userList.size).isEqualTo(1)
         assertThat(userList[0].userId).isEqualTo(mockUser.userId)
+
+        // Try to save one more
+        runCatching {
+            userRepository.save(mockUser)
+        }.onSuccess {
+            fail("Duplicated ID Key but it succeed?")
+        }.onFailure {
+            assertThat(it is ConflictException).isEqualTo(true)
+        }
     }
 
     @Test

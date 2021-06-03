@@ -1,5 +1,6 @@
 package com.branch.server.data.user
 
+import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,7 +17,15 @@ class UserRepository(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    fun save(user: User): User = rawUserRepository.save(user)
+    fun save(user: User): User {
+        return runCatching {
+            rawUserRepository.save(user)
+        }.getOrElse {
+            logger.error("Error occurred while saving entity: ${it.message}")
+            logger.error(it.stackTraceToString())
+            throw ConflictException("Duplicated Entity[id: ${user.userId}] is found!")
+        }
+    }
     fun deleteAll() = rawUserRepository.deleteAll()
     fun findAll(): List<User> = rawUserRepository.findAll()
     fun findByUserId(userId: String): User {

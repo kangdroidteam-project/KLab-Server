@@ -21,7 +21,6 @@ class UserService(
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     fun registerUser(registerRequest: RegisterRequest) {
         logger.info("Register requested for user: ${registerRequest.userId}, name: ${registerRequest.userName}")
-        checkUserNotExistsOrThrow(registerRequest.userId)
 
         userRepository.save(
             User(
@@ -46,18 +45,5 @@ class UserService(
         return LoginResponse(
             userToken = jwtTokenProvider.createToken(user.userId, user.roles.toList())
         )
-    }
-
-    private fun checkUserNotExistsOrThrow(userId: String) {
-        runCatching {
-            userRepository.findByUserId(userId)
-        }.onFailure {
-            logger.info("User $userId is not found.")
-            logger.info("Confirmed to register.")
-        }.onSuccess {
-            logger.error("User $userId already exists!")
-            logger.error("Cannot register ${userId}.")
-            throw ConflictException("Cannot Register ${userId}. $userId already exists!")
-        }
     }
 }

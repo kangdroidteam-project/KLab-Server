@@ -58,6 +58,7 @@ internal class UserServiceTest {
         }.onSuccess {
             fail("Duplicated should exists, but it succeed?")
         }.onFailure {
+            println(it.stackTraceToString())
             assertThat(it is ConflictException).isEqualTo(true)
         }
     }
