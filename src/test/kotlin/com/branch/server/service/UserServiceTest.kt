@@ -9,6 +9,7 @@ import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
+import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.ForbiddenException
 import org.assertj.core.api.Assertions.assertThat
@@ -65,7 +66,7 @@ internal class UserServiceTest {
         ).userToken
     }
 
-    private fun createCommunityObject(reservationSpace: String): Community {
+    private fun createCommunityObject(reservationSpace: String, expired: Boolean = false): Community {
         val secondReservation: GardenReservation = GardenReservation(
             reservationStartTime = System.currentTimeMillis(),
             reservationEndTime = System.currentTimeMillis() + 200,
@@ -81,7 +82,7 @@ internal class UserServiceTest {
             firstMeeting = "2021.somewhen",
             contentRecruitment = 10,
             currentRecruitment = 5,
-            isCommunityExpired = false,
+            isCommunityExpired = expired,
             gardenReservation = secondReservation
         )
     }
@@ -185,5 +186,19 @@ internal class UserServiceTest {
         val found: Community = userService.getDetailedClassInfo(savedCommunity.id)
 
         assertThat(found.id).isEqualTo(savedCommunity.id)
+    }
+
+    @Test
+    fun is_getSimpleClassList_works_well() {
+        communityRepository.save(
+            createCommunityObject("B")
+        )
+        communityRepository.save(
+            createCommunityObject("A", true)
+        )
+
+        val classList: List<SimplifiedCommunity> = userService.getSimpleClassList()
+
+        assertThat(classList.size).isEqualTo(1)
     }
 }

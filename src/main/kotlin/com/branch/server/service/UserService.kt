@@ -9,6 +9,7 @@ import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
+import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.ForbiddenException
 import com.branch.server.security.JWTTokenProvider
@@ -64,5 +65,19 @@ class UserService(
 
     fun getDetailedClassInfo(communityId: Long): Community {
         return communityRepository.findById(communityId)
+    }
+
+    fun getSimpleClassList(): List<SimplifiedCommunity> {
+        return communityRepository.findAll().filter {
+            !it.isCommunityExpired
+        }.map {
+            SimplifiedCommunity(
+                id = it.id,
+                contentTitle = it.contentTitle,
+                contentRecruitment = it.contentRecruitment,
+                currentRecruitment = it.currentRecruitment,
+                contentNeeds = it.contentNeeds
+            )
+        }
     }
 }

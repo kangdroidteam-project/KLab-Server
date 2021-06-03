@@ -4,6 +4,7 @@ import com.branch.server.data.entity.community.Community
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
+import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.service.UserService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -43,6 +44,14 @@ class UserController(
             .status(HttpStatus.OK)
             .body(
                 userService.getDetailedClassInfo(id)
+            )
+    }
+
+    @GetMapping("/api/v1/class")
+    fun getClassList(@RequestHeader httpHeaders: HttpHeaders): ResponseEntity<List<SimplifiedCommunity>> {
+        return ResponseEntity
+            .ok(
+                userService.getSimpleClassList()
             )
     }
 }

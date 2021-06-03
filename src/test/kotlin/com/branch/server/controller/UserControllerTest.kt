@@ -9,6 +9,7 @@ import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.UserRepository
+import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.service.UserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -184,6 +185,25 @@ internal class UserControllerTest {
             assertThat(it.statusCode).isEqualTo(HttpStatus.OK)
             assertThat(it.hasBody()).isEqualTo(true)
             assertThat(it.body!!.gardenReservation.reservationSpace).isEqualTo("A")
+        }
+    }
+
+    @Test
+    fun is_getClassList_works_well() {
+        val savedCommunity: Community = communityRepository.save(
+            createCommunityObject("A")
+        )
+
+        val httpHeaders: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", login())
+        }
+
+        runCatching {
+            restTemplate.exchange<List<SimplifiedCommunity>>("${serverBaseAddress}/api/v1/class", HttpMethod.GET, HttpEntity<Unit>(httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualTo(HttpStatus.OK)
+            assertThat(it.hasBody()).isEqualTo(true)
+            assertThat(it.body!!.size).isEqualTo(1)
         }
     }
 }
