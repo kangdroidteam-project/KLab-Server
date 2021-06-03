@@ -18,6 +18,7 @@ class User(
     var userName: String,
     var userAddress: String,
     var userPhoneNumber: String,
+    var userIntroduction: String? = null,
 
     @ElementCollection(fetch = FetchType.EAGER) // Always Fetch all together
     var roles: Set<String> = setOf()
