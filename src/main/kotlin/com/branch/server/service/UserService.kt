@@ -1,5 +1,6 @@
 package com.branch.server.service
 
+import com.branch.server.data.entity.community.Community
 import com.branch.server.data.entity.community.CommunityRepository
 import com.branch.server.data.entity.median.MedianTable
 import com.branch.server.data.entity.median.MedianTableRepository
@@ -59,5 +60,9 @@ class UserService(
             targetCommunity = communityRepository.findById(communityId)
         )
         medianTableRepository.save(medianTable)
+    }
+
+    fun getDetailedClassInfo(communityId: Long): Community {
+        return communityRepository.findById(communityId)
     }
 }

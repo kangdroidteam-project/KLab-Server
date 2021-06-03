@@ -1,5 +1,6 @@
 package com.branch.server.controller
 
+import com.branch.server.data.entity.community.Community
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
@@ -34,5 +35,14 @@ class UserController(
         val userToken: String = getTokenFromHeader(httpHeaders)
         userService.registerClass(userToken, id)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/api/v1/class/{id}")
+    fun getDetailedClass(@RequestHeader httpHeaders: HttpHeaders, @PathVariable("id") id: Long): ResponseEntity<Community> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(
+                userService.getDetailedClassInfo(id)
+            )
     }
 }

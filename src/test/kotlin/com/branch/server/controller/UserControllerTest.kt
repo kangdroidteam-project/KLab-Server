@@ -167,4 +167,23 @@ internal class UserControllerTest {
             assertThat(it.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
         }
     }
+
+    @Test
+    fun is_getDetailedClass_works_well() {
+        val savedCommunity: Community = communityRepository.save(
+            createCommunityObject("A")
+        )
+
+        val httpHeaders: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", login())
+        }
+
+        runCatching {
+            restTemplate.exchange<Community>("${serverBaseAddress}/api/v1/class/${savedCommunity.id}", HttpMethod.GET, HttpEntity<Unit>(httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualTo(HttpStatus.OK)
+            assertThat(it.hasBody()).isEqualTo(true)
+            assertThat(it.body!!.gardenReservation.reservationSpace).isEqualTo("A")
+        }
+    }
 }

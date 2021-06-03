@@ -177,4 +177,13 @@ internal class UserServiceTest {
             assertThat(medianList.size).isEqualTo(1)
         }
     }
+
+    @Test
+    fun is_getDetailedClassInfo_works_well() {
+        val savedCommunity: Community = communityRepository.save(createCommunityObject("A"))
+
+        val found: Community = userService.getDetailedClassInfo(savedCommunity.id)
+
+        assertThat(found.id).isEqualTo(savedCommunity.id)
+    }
 }
