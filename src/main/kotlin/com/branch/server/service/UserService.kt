@@ -23,7 +23,7 @@ class UserService(
         logger.info("Register requested for user: ${registerRequest.userId}, name: ${registerRequest.userName}")
         checkUserNotExistsOrThrow(registerRequest.userId)
 
-        userRepository.addUser(
+        userRepository.save(
             User(
                 userId = registerRequest.userId,
                 userPassword = passwordEncryptorService.encodePlainText(registerRequest.userPassword),
@@ -37,7 +37,7 @@ class UserService(
 
     fun loginUser(loginRequest: LoginRequest): LoginResponse {
         logger.info("Login Requested for user: ${loginRequest.userId}")
-        val user: User = userRepository.findUserById(loginRequest.userId)
+        val user: User = userRepository.findByUserId(loginRequest.userId)
         if (!passwordEncryptorService.isMatching(loginRequest.userPassword, user.userPassword)) {
             logger.error("Login failed for user: ${loginRequest.userId}, password is not correct!")
             throw ForbiddenException("Password for User ID ${loginRequest.userId} is wrong!")
@@ -50,7 +50,7 @@ class UserService(
 
     private fun checkUserNotExistsOrThrow(userId: String) {
         runCatching {
-            userRepository.findUserById(userId)
+            userRepository.findByUserId(userId)
         }.onFailure {
             logger.info("User $userId is not found.")
             logger.info("Confirmed to register.")

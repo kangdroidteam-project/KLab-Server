@@ -1,36 +1,31 @@
 package com.branch.server.data.user
 
 import com.branch.server.error.exception.NotFoundException
-import com.branch.server.error.exception.UnknownErrorException
-import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.find
-import org.springframework.data.mongodb.core.query.Criteria
-import org.springframework.data.mongodb.core.query.Query
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+
+interface RawUserRepository: JpaRepository<User, Long> {
+    fun findByUserId(userId: String): User
+}
 
 @Repository
 class UserRepository(
-    private val mongoTemplate: MongoTemplate
+    private val rawUserRepository: RawUserRepository
 ) {
-    // Field Declare
-    private val userIdField: String = "userId"
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    fun addUser(user: User): User = mongoTemplate.save(user)
-
-    fun findUserById(userId: String): User {
-        val userList: List<User> = mongoTemplate.find(
-            Query(Criteria.where(userIdField).`is`(userId))
-        )
-
-        // Ensure user list contains 'exactly' one.
-        ensureUserListContainsOne(userList)
-
-        return userList[0]
-    }
-
-    private fun ensureUserListContainsOne(userList: List<User>) {
-        if (userList.size != 1) {
-            throw UnknownErrorException("User find result is not exactly 1!")
+    fun save(user: User): User = rawUserRepository.save(user)
+    fun deleteAll() = rawUserRepository.deleteAll()
+    fun findAll(): List<User> = rawUserRepository.findAll()
+    fun findByUserId(userId: String): User {
+        return runCatching {
+            rawUserRepository.findByUserId(userId)
+        }.getOrElse {
+            logger.error("Error occurred: ${it.stackTraceToString()}")
+            logger.error("Cannot get user data from DB! [UserId: $userId]")
+            throw NotFoundException("Cannot get user data!")
         }
     }
 }

@@ -14,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.query.Query
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @SpringBootTest
@@ -25,15 +23,12 @@ internal class UserServiceTest {
     private lateinit var userService: UserService
 
     @Autowired
-    private lateinit var mongoTemplate: MongoTemplate
-
-    @Autowired
     private lateinit var userRepository: UserRepository
 
     @BeforeEach
     @AfterEach
     fun initTest() {
-        mongoTemplate.remove(Query(), User::class.java)
+        userRepository.deleteAll()
     }
 
     @Test
@@ -52,7 +47,7 @@ internal class UserServiceTest {
             println(it.stackTraceToString())
             fail("We are registering this user first time, but it failed?")
         }.onSuccess {
-            val user: User = userRepository.findUserById(mockRequest.userId)
+            val user: User = userRepository.findByUserId(mockRequest.userId)
             assertThat(user.userId).isEqualTo(mockRequest.userId)
             assertThat(user.userPassword).isNotEqualTo(mockRequest.userPassword)
         }

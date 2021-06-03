@@ -3,7 +3,7 @@ package com.branch.server.controller
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
-import com.branch.server.data.user.User
+import com.branch.server.data.user.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -14,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.query.Query
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
@@ -26,17 +24,17 @@ internal class UserControllerTest {
     private var port: Int = -1
 
     @Autowired
-    private lateinit var mongoTemplate: MongoTemplate
+    private lateinit var restTemplate: TestRestTemplate
 
     @Autowired
-    private lateinit var restTemplate: TestRestTemplate
+    private lateinit var userRepository: UserRepository
 
     private lateinit var serverBaseAddress: String
 
     @BeforeEach
     @AfterEach
     fun initTest() {
-        mongoTemplate.remove(Query(), User::class.java)
+        userRepository.deleteAll()
         serverBaseAddress = "http://localhost:${port}"
     }
 

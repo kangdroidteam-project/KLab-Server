@@ -77,16 +77,13 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
 	// Jackson ObjectMapper
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-	// H2 MemDB
+	// DB Related
+	runtimeOnly("mysql:mysql-connector-java")
 	implementation("com.h2database:h2")
-
-	// Embedded DB
-	implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
 
 	// JWT Token
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.2")

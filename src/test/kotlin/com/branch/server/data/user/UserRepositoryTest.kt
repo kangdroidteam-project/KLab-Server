@@ -10,9 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.findAll
-import org.springframework.data.mongodb.core.query.Query
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @SpringBootTest
@@ -20,9 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 internal class UserRepositoryTest {
     @Autowired
     private lateinit var userRepository: UserRepository
-
-    @Autowired
-    private lateinit var mongoTemplate: MongoTemplate
 
     private val mockUser: User = User(
         userId = "kangdroid",
@@ -35,7 +29,7 @@ internal class UserRepositoryTest {
     @BeforeEach
     @AfterEach
     fun initTest() {
-        mongoTemplate.remove(Query(), User::class.java)
+        userRepository.deleteAll()
     }
 
     @Test
@@ -48,10 +42,10 @@ internal class UserRepositoryTest {
             userPhoneNumber = "test"
         )
         // Save
-        userRepository.addUser(mockUser)
+        userRepository.save(mockUser)
 
         // Find
-        val userList: List<User> = mongoTemplate.findAll()
+        val userList: List<User> = userRepository.findAll()
         assertThat(userList.isNotEmpty()).isEqualTo(true)
         assertThat(userList.size).isEqualTo(1)
         assertThat(userList[0].userId).isEqualTo(mockUser.userId)
@@ -60,9 +54,9 @@ internal class UserRepositoryTest {
     @Test
     fun is_findUserById_works_well() {
         // Save
-        userRepository.addUser(mockUser)
+        userRepository.save(mockUser)
         runCatching {
-            userRepository.findUserById(mockUser.userId)
+            userRepository.findByUserId(mockUser.userId)
         }.onSuccess {
             assertThat(it.userId).isEqualTo(mockUser.userId)
         }.onFailure {
@@ -72,14 +66,14 @@ internal class UserRepositoryTest {
     }
 
     @Test
-    fun is_findUserById_throws_unknownError() {
+    fun is_findUserById_throws_404() {
         runCatching {
-            userRepository.findUserById(mockUser.userId)
+            userRepository.findByUserId(mockUser.userId)
         }.onSuccess {
             fail("We do not have entity but it succeed?")
         }.onFailure {
-            assertThat(it is UnknownErrorException).isEqualTo(true)
+            println(it.stackTraceToString())
+            assertThat(it is NotFoundException).isEqualTo(true)
         }
     }
-
 }

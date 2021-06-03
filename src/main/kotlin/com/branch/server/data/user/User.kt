@@ -1,24 +1,26 @@
 package com.branch.server.data.user
 
-import org.bson.types.ObjectId
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.stream.Collectors
+import javax.persistence.*
 
-@Document("user")
-data class User(
+@Entity
+class User(
     @Id
-    var id: ObjectId = ObjectId(),
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = -1,
     var userId: String,
     var userPassword: String,
     var userName: String,
     var userAddress: String,
     var userPhoneNumber: String,
+
+    @ElementCollection(fetch = FetchType.EAGER) // Always Fetch all together
     var roles: Set<String> = setOf()
 ): UserDetails {
+
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
         return roles.stream()
             .map { role: String? ->
