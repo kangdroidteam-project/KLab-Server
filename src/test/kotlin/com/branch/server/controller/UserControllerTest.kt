@@ -9,6 +9,8 @@ import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.UserRepository
+import com.branch.server.data.request.CommunityAddRequest
+import com.branch.server.data.request.GardenReservationRequest
 import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.service.UserService
@@ -206,6 +208,30 @@ internal class UserControllerTest {
             assertThat(it.statusCode).isEqualTo(HttpStatus.OK)
             assertThat(it.hasBody()).isEqualTo(true)
             assertThat(it.body!!.size).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun is_createClass_works_well() {
+        val communityAddRequest: CommunityAddRequest = CommunityAddRequest(
+            contentTitle = "Class Test",
+            contentAuthor = "KangDroid",
+            innerContent = "We are~",
+            contentNeeds = "Pencils",
+            contentDeadline = "2021.06",
+            contentRecruitment = 4,
+            gardenReservationRequest = GardenReservationRequest(
+                reservationSpace = "A",
+                reservationStartTime = System.currentTimeMillis()
+            )
+        )
+        val httpHeaders: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", login())
+        }
+        runCatching {
+            restTemplate.exchange<Unit>("${serverBaseAddress}/api/v1/class", HttpMethod.POST, HttpEntity<CommunityAddRequest>(communityAddRequest, httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
         }
     }
 }

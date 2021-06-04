@@ -1,6 +1,7 @@
 package com.branch.server.controller
 
 import com.branch.server.data.entity.community.Community
+import com.branch.server.data.request.CommunityAddRequest
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
@@ -55,5 +56,11 @@ class UserController(
             .ok(
                 userService.getSimpleClassList()
             )
+    }
+
+    @PostMapping("/api/v1/class")
+    fun addClass(@RequestHeader httpHeaders: HttpHeaders, @RequestBody communityAddRequest: CommunityAddRequest): ResponseEntity<Unit> {
+        userService.createClass(communityAddRequest)
+        return ResponseEntity.noContent().build()
     }
 }
