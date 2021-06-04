@@ -10,6 +10,7 @@ import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.response.SimplifiedCommunity
+import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.ForbiddenException
 import com.branch.server.security.JWTTokenProvider
@@ -54,13 +55,15 @@ class UserService(
         )
     }
 
-    fun registerClass(userToken: String, communityId: Long) {
+    fun registerClass(userToken: String, communityId: Long): List<SimplifiedMyPageCommunity> {
         val user: User = userRepository.findByUserId(jwtTokenProvider.getUserPk(userToken))
         val medianTable: MedianTable = MedianTable(
             targetUser = user,
             targetCommunity = communityRepository.findById(communityId)
         )
         medianTableRepository.save(medianTable)
+
+        return getUserRegisteredCommunity(user.userId)
     }
 
     fun getDetailedClassInfo(communityId: Long): Community {
@@ -79,5 +82,15 @@ class UserService(
                 contentNeeds = it.contentNeeds
             )
         }
+    }
+
+    private fun getUserRegisteredCommunity(userId: String): List<SimplifiedMyPageCommunity> = medianTableRepository.findAllByTargetUser_UserId(userId).map {
+        SimplifiedMyPageCommunity(
+            id = it.targetCommunity.id, // Class ID
+            contentTitle = it.targetCommunity.contentTitle, // Class Title
+            startTime = it.targetCommunity.gardenReservation.reservationStartTime, // Class Reservation Time
+            contentNeeds = it.targetCommunity.contentNeeds, // Class Contents
+            isRequestConfirmed = it.isRequestConfirmed // Is Request Confirmed
+        )
     }
 }

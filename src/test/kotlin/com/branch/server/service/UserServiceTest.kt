@@ -10,6 +10,7 @@ import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.response.SimplifiedCommunity
+import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.ForbiddenException
 import org.assertj.core.api.Assertions.assertThat
@@ -172,10 +173,7 @@ internal class UserServiceTest {
             println(it.stackTraceToString())
             fail("We've set up all of data but it failed")
         }.onSuccess {
-            val medianList: List<MedianTable> =
-                medianRepository.findAllByTargetUser_UserId(loginUser.userId)
-
-            assertThat(medianList.size).isEqualTo(1)
+            assertThat(it.size).isEqualTo(1)
         }
     }
 

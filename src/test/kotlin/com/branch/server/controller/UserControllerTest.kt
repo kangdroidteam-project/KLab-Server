@@ -10,6 +10,7 @@ import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.response.SimplifiedCommunity
+import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.service.UserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -163,9 +164,11 @@ internal class UserControllerTest {
         }
 
         runCatching {
-            restTemplate.exchange<Unit>("${serverBaseAddress}/api/v1/user/class/${savedCommunity.id}", HttpMethod.POST, HttpEntity<Unit>(httpHeaders))
+            restTemplate.exchange<List<SimplifiedMyPageCommunity>>("${serverBaseAddress}/api/v1/user/class/${savedCommunity.id}", HttpMethod.POST, HttpEntity<Unit>(httpHeaders))
         }.onSuccess {
-            assertThat(it.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+            assertThat(it.statusCode).isEqualTo(HttpStatus.OK)
+            assertThat(it.hasBody()).isEqualTo(true)
+            assertThat(it.body!!.size).isEqualTo(1)
         }
     }
 
