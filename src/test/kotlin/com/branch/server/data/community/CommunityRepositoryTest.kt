@@ -22,7 +22,6 @@ class CommunityRepositoryTest {
 
     private val gardenReservation: GardenReservation = GardenReservation(
         reservationStartTime = System.currentTimeMillis(),
-        reservationEndTime = System.currentTimeMillis() + 200,
         reservationSpace = "A"
     )
 
@@ -52,7 +51,6 @@ class CommunityRepositoryTest {
         val totalList: List<Community> = communityRepository.findAll()
 
         assertThat(findResult.contentTitle).isEqualTo(mockCommunity.contentTitle)
-        assertThat(findResult.gardenReservation.reservationEndTime).isEqualTo(mockCommunity.gardenReservation.reservationEndTime)
         assertThat(totalList.isEmpty()).isEqualTo(false)
         assertThat(totalList.size).isEqualTo(1)
     }

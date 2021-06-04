@@ -31,7 +31,6 @@ class MedianTableRepositoryTest {
     private fun createCommunityObject(reservationSpace: String): Community {
         val secondReservation: GardenReservation = GardenReservation(
             reservationStartTime = System.currentTimeMillis(),
-            reservationEndTime = System.currentTimeMillis() + 200,
             reservationSpace = reservationSpace
         )
 

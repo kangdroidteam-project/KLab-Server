@@ -70,7 +70,6 @@ internal class UserServiceTest {
     private fun createCommunityObject(reservationSpace: String, expired: Boolean = false): Community {
         val secondReservation: GardenReservation = GardenReservation(
             reservationStartTime = System.currentTimeMillis(),
-            reservationEndTime = System.currentTimeMillis() + 200,
             reservationSpace = reservationSpace
         )
 
