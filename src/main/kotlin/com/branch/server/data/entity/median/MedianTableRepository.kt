@@ -10,5 +10,5 @@ class MedianTableRepository(
     fun save(table: MedianTable): MedianTable = rawMedianRepository.save(table)
     fun findAllByTargetUser_UserId(userId: String): List<MedianTable> = rawMedianRepository.findAllByTargetUser_UserId(userId)
     fun findAllByTargetCommunity_Id(communityId: Long): List<MedianTable> = rawMedianRepository.findAllByTargetCommunity_Id(communityId)
-    fun findByTargetUser_UserIdAndTargetCommunity_Id(userId: String, communityId: Long): MedianTable = rawMedianRepository.findByTargetUser_UserIdAndTargetCommunity_Id(userId, communityId)
+    fun findByTargetUser_UserNameAndTargetCommunity_Id(userName: String, communityId: Long): MedianTable = rawMedianRepository.findByTargetUser_UserNameAndTargetCommunity_Id(userName, communityId)
 }

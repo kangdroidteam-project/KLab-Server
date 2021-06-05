@@ -161,8 +161,8 @@ class UserService(
         }
     }
 
-    private fun updateMedianTable(classId: Long, userId: String) {
-        medianTableRepository.findByTargetUser_UserIdAndTargetCommunity_Id(userId, classId).apply {
+    private fun updateMedianTable(classId: Long, userName: String) {
+        medianTableRepository.findByTargetUser_UserNameAndTargetCommunity_Id(userName, classId).apply {
             isRequestConfirmed = true
             medianTableRepository.save(this)
         }

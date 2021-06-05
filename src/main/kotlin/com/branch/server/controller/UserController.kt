@@ -87,8 +87,8 @@ class UserController(
         )
     }
 
-    @PostMapping("/api/v1/class/{id}/user/{userId}")
-    fun confirmClassParticipants(@RequestHeader httpHeaders: HttpHeaders, @PathVariable("id") classId: Long, @PathVariable("userId") userId: String): ResponseEntity<Unit> {
+    @PostMapping("/api/v1/class/{id}/user/{userName}")
+    fun confirmClassParticipants(@RequestHeader httpHeaders: HttpHeaders, @PathVariable("id") classId: Long, @PathVariable("userName") userId: String): ResponseEntity<Unit> {
         userService.confirmClassParticipants(classId, userId)
         return ResponseEntity.noContent().build()
     }
