@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 interface RawCommunityRepository: JpaRepository<Community, Long> {
+    fun findAllByContentAuthor(userName: String): List<Community>
 }
 
 @Repository
@@ -34,5 +35,9 @@ class CommunityRepository(
             logger.error("StackTrace: ${it.stackTraceToString()}")
             throw NotFoundException("Cannot find community object from id: ${id}!")
         }
+    }
+
+    fun findAllByContentAuthor(userName: String): List<Community> {
+        return rawCommunityRepository.findAllByContentAuthor(userName)
     }
 }

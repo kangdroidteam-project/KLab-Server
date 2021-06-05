@@ -230,4 +230,22 @@ internal class UserServiceTest {
             assertThat(it.userName).isEqualTo("kangdroid")
         }
     }
+
+    @Test
+    fun is_getParticipatedClass_works_well() {
+        val loginToken: String = login()
+        val listCommunity: List<SimplifiedMyPageCommunity> =
+            userService.getParticipatedClass(loginToken)
+
+        assertThat(listCommunity.size).isEqualTo(0)
+    }
+
+    @Test
+    fun is_getHostedClass_works_well() {
+        val loginToken: String = login()
+        val listCommunity: List<SimplifiedMyPageCommunity> =
+            userService.getHostedClass(loginToken)
+
+        assertThat(listCommunity.size).isEqualTo(0)
+    }
 }

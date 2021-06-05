@@ -71,4 +71,15 @@ class UserController(
             userService.getSealedUser(getTokenFromHeader((httpHeaders)))
         )
     }
+
+    @GetMapping("/api/v1/user/class")
+    fun getUserRelatedClass(@RequestHeader httpHeaders: HttpHeaders, @RequestParam("isParticipant") isParticipant: Boolean): ResponseEntity<List<SimplifiedMyPageCommunity>> {
+        return ResponseEntity.ok(
+            if (isParticipant) {
+                userService.getParticipatedClass(getTokenFromHeader(httpHeaders))
+            } else {
+                userService.getHostedClass(getTokenFromHeader(httpHeaders))
+            }
+        )
+    }
 }

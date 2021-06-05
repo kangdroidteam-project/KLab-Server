@@ -106,6 +106,32 @@ class UserService(
         )
     }
 
+    fun getParticipatedClass(userToken: String): List<SimplifiedMyPageCommunity> {
+        val user: User = userRepository.findByUserId(jwtTokenProvider.getUserPk(userToken))
+        return medianTableRepository.findAllByTargetUser_UserId(user.userId).map {
+            SimplifiedMyPageCommunity(
+                id = it.targetCommunity.id,
+                contentTitle = it.targetCommunity.contentTitle,
+                startTime = it.targetCommunity.gardenReservation.reservationStartTime,
+                contentNeeds = it.targetCommunity.contentNeeds,
+                isRequestConfirmed = it.isRequestConfirmed
+            )
+        }
+    }
+
+    fun getHostedClass(userToken: String): List<SimplifiedMyPageCommunity> {
+        val user: User = userRepository.findByUserId(jwtTokenProvider.getUserPk(userToken))
+        return communityRepository.findAllByContentAuthor(user.userName).map {
+            SimplifiedMyPageCommunity(
+                id = it.id,
+                contentTitle = it.contentTitle,
+                startTime = it.gardenReservation.reservationStartTime,
+                contentNeeds = it.contentNeeds,
+                isRequestConfirmed = false
+            )
+        }
+    }
+
     private fun getUserRegisteredCommunity(userId: String): List<SimplifiedMyPageCommunity> = medianTableRepository.findAllByTargetUser_UserId(userId).map {
         SimplifiedMyPageCommunity(
             id = it.targetCommunity.id, // Class ID

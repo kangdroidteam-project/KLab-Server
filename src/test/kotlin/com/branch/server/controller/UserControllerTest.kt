@@ -252,4 +252,26 @@ internal class UserControllerTest {
             assertThat(it.hasBody()).isEqualTo(true)
         }
     }
+
+    @Test
+    fun is_getUserRelatedClass_works_well() {
+        val httpHeaders: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", login())
+        }
+
+        runCatching {
+            restTemplate.exchange<List<SimplifiedMyPageCommunity>>("${serverBaseAddress}/api/v1/user/class?isParticipant=true", HttpMethod.GET, HttpEntity<Unit>(httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualByComparingTo(HttpStatus.OK)
+            assertThat(it.hasBody()).isEqualTo(true)
+        }
+
+        runCatching {
+            restTemplate.exchange<List<SimplifiedMyPageCommunity>>("${serverBaseAddress}/api/v1/user/class?isParticipant=false", HttpMethod.GET, HttpEntity<Unit>(httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualByComparingTo(HttpStatus.OK)
+            assertThat(it.hasBody()).isEqualTo(true)
+        }
+    }
+
 }
