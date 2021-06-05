@@ -7,13 +7,10 @@ import com.branch.server.data.entity.reservation.GardenReservation
 import com.branch.server.data.entity.user.User
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
-import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.request.CommunityAddRequest
 import com.branch.server.data.request.GardenReservationRequest
-import com.branch.server.data.response.SealedUser
-import com.branch.server.data.response.SimplifiedCommunity
-import com.branch.server.data.response.SimplifiedMyPageCommunity
+import com.branch.server.data.response.*
 import com.branch.server.service.UserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -31,6 +28,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import javax.net.ssl.HttpsURLConnection
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension::class)
@@ -271,6 +269,20 @@ internal class UserControllerTest {
         }.onSuccess {
             assertThat(it.statusCode).isEqualByComparingTo(HttpStatus.OK)
             assertThat(it.hasBody()).isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun is_getClassParticipants_works_well() {
+        val httpHeaders: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", login())
+        }
+        val savedCommunity: Community = communityRepository.save(createCommunityObject("A"))
+
+        runCatching {
+            restTemplate.exchange<ManagerConfirmCommunity>("${serverBaseAddress}/api/v1/class/${savedCommunity.id}/user", HttpMethod.GET, HttpEntity<Unit>(httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualTo(HttpStatus.OK)
         }
     }
 

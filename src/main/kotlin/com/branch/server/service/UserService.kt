@@ -6,13 +6,10 @@ import com.branch.server.data.entity.median.MedianTable
 import com.branch.server.data.entity.median.MedianTableRepository
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
-import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.request.CommunityAddRequest
-import com.branch.server.data.response.SealedUser
-import com.branch.server.data.response.SimplifiedCommunity
-import com.branch.server.data.response.SimplifiedMyPageCommunity
+import com.branch.server.data.response.*
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.ForbiddenException
 import com.branch.server.security.JWTTokenProvider
@@ -130,6 +127,26 @@ class UserService(
                 isRequestConfirmed = false
             )
         }
+    }
+
+    fun getClassParticipants(userToken: String, classId: Long): ManagerConfirmCommunity {
+        val community: Community = communityRepository.findById(classId)
+        val medianTableList: List<MedianTable> = medianTableRepository.findAllByTargetCommunity_Id(classId)
+
+        return ManagerConfirmCommunity(
+            communityTitle = community.contentTitle,
+            communityTotalRecruitment = community.contentRecruitment,
+            communityCurrentRecruitment = community.currentRecruitment,
+            participantsList = medianTableList.map {
+                SealedUser(
+                    userName = it.targetUser.userName,
+                    userAddress = it.targetUser.userAddress,
+                    userPhoneNumber = it.targetUser.userPhoneNumber,
+                    userIntroduction = it.targetUser.userIntroduction,
+                    isRequestConfirmed = it.isRequestConfirmed
+                )
+            }
+        )
     }
 
     private fun getUserRegisteredCommunity(userId: String): List<SimplifiedMyPageCommunity> = medianTableRepository.findAllByTargetUser_UserId(userId).map {

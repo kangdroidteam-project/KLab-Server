@@ -4,10 +4,7 @@ import com.branch.server.data.entity.community.Community
 import com.branch.server.data.request.CommunityAddRequest
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
-import com.branch.server.data.response.LoginResponse
-import com.branch.server.data.response.SealedUser
-import com.branch.server.data.response.SimplifiedCommunity
-import com.branch.server.data.response.SimplifiedMyPageCommunity
+import com.branch.server.data.response.*
 import com.branch.server.service.UserService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -80,6 +77,13 @@ class UserController(
             } else {
                 userService.getHostedClass(getTokenFromHeader(httpHeaders))
             }
+        )
+    }
+
+    @GetMapping("/api/v1/class/{id}/user")
+    fun getClassParticipants(@RequestHeader httpHeaders: HttpHeaders, @PathVariable("id") classId: Long): ResponseEntity<ManagerConfirmCommunity> {
+        return ResponseEntity.ok(
+            userService.getClassParticipants(getTokenFromHeader(httpHeaders), classId)
         )
     }
 }

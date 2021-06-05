@@ -11,6 +11,7 @@ import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.request.CommunityAddRequest
 import com.branch.server.data.request.GardenReservationRequest
+import com.branch.server.data.response.ManagerConfirmCommunity
 import com.branch.server.data.response.SealedUser
 import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.data.response.SimplifiedMyPageCommunity
@@ -247,5 +248,15 @@ internal class UserServiceTest {
             userService.getHostedClass(loginToken)
 
         assertThat(listCommunity.size).isEqualTo(0)
+    }
+
+    @Test
+    fun is_getClassParticipants_works_well() {
+        val loginToken: String = login()
+        val savedClass: Community = communityRepository.save(createCommunityObject("A"))
+
+        val managerConfirmCommunity: ManagerConfirmCommunity = userService.getClassParticipants(loginToken, savedClass.id)
+
+        assertThat(managerConfirmCommunity.participantsList.isEmpty()).isEqualTo(true)
     }
 }
