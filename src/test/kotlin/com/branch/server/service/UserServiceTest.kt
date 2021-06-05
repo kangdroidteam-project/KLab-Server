@@ -57,7 +57,8 @@ internal class UserServiceTest {
                 userName = loginUser.userName,
                 userPassword = loginUser.userPassword,
                 userPhoneNumber = loginUser.userPhoneNumber,
-                userAddress = loginUser.userAddress
+                userAddress = loginUser.userAddress,
+                userIntroduction = ""
             )
         )
 
@@ -105,7 +106,8 @@ internal class UserServiceTest {
             userPassword = "test",
             userAddress = "test",
             userPhoneNumber = "test",
-            userName = "test"
+            userName = "test",
+            userIntroduction = ""
         )
 
         runCatching {
@@ -137,7 +139,8 @@ internal class UserServiceTest {
             userPassword = "test",
             userAddress = "test",
             userPhoneNumber = "test",
-            userName = "test"
+            userName = "test",
+            userIntroduction = ""
         )
         userService.registerUser(mockRequest)
 
@@ -203,6 +206,7 @@ internal class UserServiceTest {
 
     @Test
     fun is_createClass_works_well() {
+        val loginToken: String = login()
         val communityAddRequest: CommunityAddRequest = CommunityAddRequest(
             contentTitle = "Class Test",
             contentAuthor = "KangDroid",
@@ -215,6 +219,6 @@ internal class UserServiceTest {
                 reservationStartTime = System.currentTimeMillis()
             )
         )
-        userService.createClass(communityAddRequest)
+        userService.createClass(loginToken, communityAddRequest)
     }
 }

@@ -101,7 +101,8 @@ internal class UserControllerTest {
                 userName = loginUser.userName,
                 userPassword = loginUser.userPassword,
                 userPhoneNumber = loginUser.userPhoneNumber,
-                userAddress = loginUser.userAddress
+                userAddress = loginUser.userAddress,
+                userIntroduction = ""
             )
         )
 
@@ -120,7 +121,8 @@ internal class UserControllerTest {
             userPassword = "test",
             userAddress = "test",
             userPhoneNumber = "test",
-            userName = "test"
+            userName = "test",
+            userIntroduction = ""
         )
 
         runCatching {
@@ -137,7 +139,8 @@ internal class UserControllerTest {
             userPassword = "test",
             userAddress = "test",
             userPhoneNumber = "test",
-            userName = "test"
+            userName = "test",
+            userIntroduction = ""
         )
         restTemplate.postForEntity<Unit>("${serverBaseAddress}/api/v1/user", mockRegisterRequest)
 

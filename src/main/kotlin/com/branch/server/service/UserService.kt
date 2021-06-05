@@ -38,7 +38,8 @@ class UserService(
                 userName = registerRequest.userName,
                 userAddress = registerRequest.userAddress,
                 userPhoneNumber = registerRequest.userPhoneNumber,
-                roles = setOf("ROLE_USER")
+                roles = setOf("ROLE_USER"),
+                userIntroduction = registerRequest.userIntroduction
             )
         )
     }
