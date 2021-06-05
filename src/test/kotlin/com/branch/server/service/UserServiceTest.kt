@@ -294,7 +294,7 @@ internal class UserServiceTest {
         userService.registerClass(secondToken, targetCommunity.id)
 
         runCatching {
-            userService.confirmClassParticipants(targetCommunity.id, secondUser.userId)
+            userService.confirmClassParticipants(targetCommunity.id, secondUser.userName)
         }.onSuccess {
             val managerConfirmCommunity: ManagerConfirmCommunity = userService.getClassParticipants(loginToken, targetCommunity.id).also {
                 assertThat(it.participantsList.size).isEqualTo(1)
