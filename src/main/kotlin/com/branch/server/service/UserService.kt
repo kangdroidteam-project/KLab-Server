@@ -10,6 +10,7 @@ import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.request.CommunityAddRequest
+import com.branch.server.data.response.SealedUser
 import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.error.exception.ConflictException
@@ -92,6 +93,17 @@ class UserService(
             contentAuthor = user.userName
         }
         communityRepository.save(communityAddRequest.toCommunity())
+    }
+
+    fun getSealedUser(userToken: String): SealedUser {
+        val user: User = userRepository.findByUserId(jwtTokenProvider.getUserPk(userToken))
+        return SealedUser(
+            userName = user.userName,
+            userAddress = user.userAddress,
+            userPhoneNumber = user.userPhoneNumber,
+            userIntroduction = user.userIntroduction,
+            isRequestConfirmed = false
+        )
     }
 
     private fun getUserRegisteredCommunity(userId: String): List<SimplifiedMyPageCommunity> = medianTableRepository.findAllByTargetUser_UserId(userId).map {

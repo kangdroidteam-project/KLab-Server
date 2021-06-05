@@ -5,6 +5,7 @@ import com.branch.server.data.request.CommunityAddRequest
 import com.branch.server.data.request.LoginRequest
 import com.branch.server.data.request.RegisterRequest
 import com.branch.server.data.response.LoginResponse
+import com.branch.server.data.response.SealedUser
 import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.service.UserService
@@ -62,5 +63,12 @@ class UserController(
     fun addClass(@RequestHeader httpHeaders: HttpHeaders, @RequestBody communityAddRequest: CommunityAddRequest): ResponseEntity<Unit> {
         userService.createClass(getTokenFromHeader(httpHeaders), communityAddRequest)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/api/v1/user")
+    fun getUser(@RequestHeader httpHeaders: HttpHeaders): ResponseEntity<SealedUser> {
+        return ResponseEntity.ok(
+            userService.getSealedUser(getTokenFromHeader((httpHeaders)))
+        )
     }
 }

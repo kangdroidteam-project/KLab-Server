@@ -11,6 +11,7 @@ import com.branch.server.data.response.LoginResponse
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.request.CommunityAddRequest
 import com.branch.server.data.request.GardenReservationRequest
+import com.branch.server.data.response.SealedUser
 import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.service.UserService
@@ -235,6 +236,20 @@ internal class UserControllerTest {
             restTemplate.exchange<Unit>("${serverBaseAddress}/api/v1/class", HttpMethod.POST, HttpEntity<CommunityAddRequest>(communityAddRequest, httpHeaders))
         }.onSuccess {
             assertThat(it.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+        }
+    }
+
+    @Test
+    fun is_getSealedUser_works_well() {
+        val httpHeaders: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", login())
+        }
+
+        runCatching {
+            restTemplate.exchange<SealedUser>("${serverBaseAddress}/api/v1/user", HttpMethod.GET, HttpEntity<Unit>(httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualByComparingTo(HttpStatus.OK)
+            assertThat(it.hasBody()).isEqualTo(true)
         }
     }
 }

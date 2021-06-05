@@ -11,6 +11,7 @@ import com.branch.server.data.entity.user.User
 import com.branch.server.data.entity.user.UserRepository
 import com.branch.server.data.request.CommunityAddRequest
 import com.branch.server.data.request.GardenReservationRequest
+import com.branch.server.data.response.SealedUser
 import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.error.exception.ConflictException
@@ -220,5 +221,13 @@ internal class UserServiceTest {
             )
         )
         userService.createClass(loginToken, communityAddRequest)
+    }
+
+    @Test
+    fun is_getSealedUser_works_well() {
+        val loginToken: String = login()
+        val sealedUser: SealedUser = userService.getSealedUser(loginToken).also {
+            assertThat(it.userName).isEqualTo("kangdroid")
+        }
     }
 }
