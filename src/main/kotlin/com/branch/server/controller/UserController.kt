@@ -60,7 +60,7 @@ class UserController(
 
     @PostMapping("/api/v1/class")
     fun addClass(@RequestHeader httpHeaders: HttpHeaders, @RequestBody communityAddRequest: CommunityAddRequest): ResponseEntity<Unit> {
-        userService.createClass(communityAddRequest)
+        userService.createClass(getTokenFromHeader(httpHeaders), communityAddRequest)
         return ResponseEntity.noContent().build()
     }
 }

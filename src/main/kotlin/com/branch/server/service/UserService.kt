@@ -85,7 +85,11 @@ class UserService(
         }
     }
 
-    fun createClass(communityAddRequest: CommunityAddRequest) {
+    fun createClass(userToken: String, communityAddRequest: CommunityAddRequest) {
+        val user: User = userRepository.findByUserId(jwtTokenProvider.getUserPk(userToken))
+        communityAddRequest.apply {
+            contentAuthor = user.userName
+        }
         communityRepository.save(communityAddRequest.toCommunity())
     }
 

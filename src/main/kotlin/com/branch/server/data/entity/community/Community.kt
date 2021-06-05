@@ -10,6 +10,7 @@ class Community(
     var id: Long = -1,
     var contentTitle: String, // 제목
     var contentAuthor: String, // 만든사람
+    @Column(columnDefinition = "TEXT")
     var contentPicture: String? = null, // 사진 [없으면 null]
     var innerContent: String, // 내용
     var contentNeeds: String, // 무엇이 필요한가
