@@ -86,4 +86,10 @@ class UserController(
             userService.getClassParticipants(getTokenFromHeader(httpHeaders), classId)
         )
     }
+
+    @PostMapping("/api/v1/class/{id}/user/{userId}")
+    fun confirmClassParticipants(@RequestHeader httpHeaders: HttpHeaders, @PathVariable("id") classId: Long, @PathVariable("userId") userId: String): ResponseEntity<Unit> {
+        userService.confirmClassParticipants(classId, userId)
+        return ResponseEntity.noContent().build()
+    }
 }

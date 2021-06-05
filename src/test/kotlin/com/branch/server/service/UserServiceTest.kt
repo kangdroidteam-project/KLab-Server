@@ -17,6 +17,7 @@ import com.branch.server.data.response.SimplifiedCommunity
 import com.branch.server.data.response.SimplifiedMyPageCommunity
 import com.branch.server.error.exception.ConflictException
 import com.branch.server.error.exception.ForbiddenException
+import com.branch.server.security.JWTTokenProvider
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -41,6 +42,9 @@ internal class UserServiceTest {
 
     @Autowired
     private lateinit var medianRepository: MedianTableRepository
+
+    @Autowired
+    private lateinit var jwtTokenProvider: JWTTokenProvider
 
     @BeforeEach
     @AfterEach
@@ -258,5 +262,49 @@ internal class UserServiceTest {
         val managerConfirmCommunity: ManagerConfirmCommunity = userService.getClassParticipants(loginToken, savedClass.id)
 
         assertThat(managerConfirmCommunity.participantsList.isEmpty()).isEqualTo(true)
+    }
+
+    @Test
+    fun is_confirmClassParticipants_works_well() {
+        val loginToken: String = login() // Create User
+
+        // Second User
+        val secondUser: User = userRepository.save(
+            createMockUser("kdr").apply {
+                roles = setOf("ROLE_USER")
+            }
+        )
+        val secondToken: String = jwtTokenProvider.createToken(secondUser.userId, secondUser.roles.toList())
+
+        val communityAddRequest: CommunityAddRequest = CommunityAddRequest(
+            contentTitle = "Class Test",
+            contentAuthor = "KangDroid",
+            innerContent = "We are~",
+            contentNeeds = "Pencils",
+            contentDeadline = "2021.06",
+            contentRecruitment = 4,
+            gardenReservationRequest = GardenReservationRequest(
+                reservationSpace = "A",
+                reservationStartTime = System.currentTimeMillis()
+            )
+        )
+        userService.createClass(loginToken, communityAddRequest)
+        val targetCommunity: Community = communityRepository.findAll()[0]
+
+        userService.registerClass(secondToken, targetCommunity.id)
+
+        runCatching {
+            userService.confirmClassParticipants(targetCommunity.id, secondUser.userId)
+        }.onSuccess {
+            val managerConfirmCommunity: ManagerConfirmCommunity = userService.getClassParticipants(loginToken, targetCommunity.id).also {
+                assertThat(it.participantsList.size).isEqualTo(1)
+                assertThat(it.participantsList[0].userName).isEqualTo("kdr")
+            }
+
+            val participatedClass: List<SimplifiedMyPageCommunity> = userService.getParticipatedClass(secondToken).also {
+                assertThat(it.size).isEqualTo(1)
+                assertThat(it[0].id).isEqualTo(targetCommunity.id)
+            }
+        }
     }
 }

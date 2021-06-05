@@ -149,6 +149,25 @@ class UserService(
         )
     }
 
+    fun confirmClassParticipants(classId: Long, userId: String) {
+        updateUserToCommunity(classId)
+        updateMedianTable(classId, userId)
+    }
+
+    private fun updateUserToCommunity(classId: Long) {
+        communityRepository.findById(classId).apply {
+            currentRecruitment++
+            communityRepository.save(this)
+        }
+    }
+
+    private fun updateMedianTable(classId: Long, userId: String) {
+        medianTableRepository.findByTargetUser_UserIdAndTargetCommunity_Id(userId, classId).apply {
+            isRequestConfirmed = true
+            medianTableRepository.save(this)
+        }
+    }
+
     private fun getUserRegisteredCommunity(userId: String): List<SimplifiedMyPageCommunity> = medianTableRepository.findAllByTargetUser_UserId(userId).map {
         SimplifiedMyPageCommunity(
             id = it.targetCommunity.id, // Class ID

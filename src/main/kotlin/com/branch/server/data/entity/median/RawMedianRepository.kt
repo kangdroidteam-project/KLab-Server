@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface RawMedianRepository: JpaRepository<MedianTable, Long> {
     fun findAllByTargetUser_UserId(userId: String): List<MedianTable>
     fun findAllByTargetCommunity_Id(communityId: Long): List<MedianTable>
+    fun findByTargetUser_UserIdAndTargetCommunity_Id(userId: String, communityId: Long): MedianTable
 }

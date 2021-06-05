@@ -91,9 +91,10 @@ internal class UserControllerTest {
     )
 
 
-    private val loginUser: User = createMockUser("kangdroid")
+    private lateinit var loginUser: User
 
-    private fun login(): String {
+    private fun login(userId: String = "kangdroid"): String {
+        loginUser = createMockUser(userId)
         userService.registerUser(
             RegisterRequest(
                 userId = loginUser.userId,
@@ -283,6 +284,22 @@ internal class UserControllerTest {
             restTemplate.exchange<ManagerConfirmCommunity>("${serverBaseAddress}/api/v1/class/${savedCommunity.id}/user", HttpMethod.GET, HttpEntity<Unit>(httpHeaders))
         }.onSuccess {
             assertThat(it.statusCode).isEqualTo(HttpStatus.OK)
+        }
+    }
+
+    @Test
+    fun is_confirmClassParticipants_works_well() {
+        val savedCommunity: Community = communityRepository.save(createCommunityObject("A"))
+        val httpHeaders: HttpHeaders = HttpHeaders().apply {
+            add("X-AUTH-TOKEN", login())
+        }
+        val secondUserToken: String = login("test")
+        userService.registerClass(secondUserToken, savedCommunity.id)
+
+        runCatching {
+            restTemplate.exchange<Unit>("${serverBaseAddress}/api/v1/class/${savedCommunity.id}/user/test", HttpMethod.POST, HttpEntity<Unit>(httpHeaders))
+        }.onSuccess {
+            assertThat(it.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
         }
     }
 
