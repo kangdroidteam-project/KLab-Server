@@ -52,7 +52,7 @@ class UserController(
     fun getClassList(@RequestHeader httpHeaders: HttpHeaders): ResponseEntity<List<SimplifiedCommunity>> {
         return ResponseEntity
             .ok(
-                userService.getSimpleClassList()
+                userService.getSimpleClassList(getTokenFromHeader(httpHeaders))
             )
     }
 

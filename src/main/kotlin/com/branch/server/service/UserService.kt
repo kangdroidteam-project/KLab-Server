@@ -70,9 +70,10 @@ class UserService(
         return communityRepository.findById(communityId)
     }
 
-    fun getSimpleClassList(): List<SimplifiedCommunity> {
+    fun getSimpleClassList(userToken: String): List<SimplifiedCommunity> {
+        val userName: String = jwtTokenProvider.getUserPk(userToken)
         return communityRepository.findAll().filter {
-            !it.isCommunityExpired
+            !it.isCommunityExpired && (it.contentAuthor != userName)
         }.map {
             SimplifiedCommunity(
                 id = it.id,

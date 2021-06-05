@@ -54,9 +54,10 @@ internal class UserServiceTest {
         communityRepository.deleteAll()
     }
 
-    private val loginUser: User = createMockUser("kangdroid")
+    private lateinit var loginUser: User
 
-    private fun login(): String {
+    private fun login(userId: String = "kangdroid"): String {
+        loginUser = createMockUser(userId)
         userService.registerUser(
             RegisterRequest(
                 userId = loginUser.userId,
@@ -198,6 +199,7 @@ internal class UserServiceTest {
 
     @Test
     fun is_getSimpleClassList_works_well() {
+        val token: String = login("KangDroid")
         communityRepository.save(
             createCommunityObject("B")
         )
@@ -205,9 +207,9 @@ internal class UserServiceTest {
             createCommunityObject("A", true)
         )
 
-        val classList: List<SimplifiedCommunity> = userService.getSimpleClassList()
+        val classList: List<SimplifiedCommunity> = userService.getSimpleClassList(token)
 
-        assertThat(classList.size).isEqualTo(1)
+        assertThat(classList.size).isEqualTo(0)
     }
 
     @Test
